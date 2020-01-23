@@ -1,0 +1,22 @@
+<coordinator-app xmlns="uri:oozie:coordinator:0.5" name="${workflowName}"
+                 frequency="${coordinatorFrequency}" start="${StartDate}" end="${EndDate}"
+                 timezone="${timeZone}">
+    <controls>
+        <timeout>${workflowTimeout}</timeout>
+        <concurrency>${workflowConcurrency}</concurrency>
+        <execution>${executionOrder}</execution>
+    </controls>
+
+    <action>
+        <workflow>
+            <app-path>${workflowAppPath}</app-path>
+            <configuration>
+                <property>
+                    <name>test_coordinator</name>
+                    <value>${coord:formatTime(dateOffset(coord:nominalTime(), 0, 'DAY'),'yyyy-MM-dd')}</value>
+                </property>
+            </configuration>
+        </workflow>
+    </action>
+
+</coordinator-app>

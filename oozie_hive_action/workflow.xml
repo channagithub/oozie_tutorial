@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow-app name="weekly-process-buffer-hive" xmlns="uri:oozie:workflow:0.2">
+    <start to="get_unique_pcm_values"/>
+    <action name="get_unique_pcm_values">
+        <hive2 xmlns="uri:oozie:hive2-action:0.1">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>hive.execution.engine</name>
+                    <value>tez</value>
+                </property>
+                <property>
+                    <name>tez.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+                <property>
+                    <name>hive.vectorized.execution.enabled</name>
+                    <value>true</value>
+                </property>
+                <property>
+                    <name>hive.vectorized.execution.reduce.enabled</name>
+                    <value>true</value>
+                </property>
+            </configuration>
+            <jdbc-url>jdbc:hive2://serv:9000/default;transportMode=http;httpPath=cliservice</jdbc-url>
+            <password></password>
+            <script>${jobInput}</script>
+        </hive2>
+        <ok to="end"/>
+        <error to="kill"/>
+    </action>
+    <kill name="kill">
+        <message>Action failed, error
+            message[${wf:errorMessage(wf:lastErrorNode())}]
+        </message>
+    </kill>
+    <end name="end"/>
+</workflow-app>
